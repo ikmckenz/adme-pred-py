@@ -3,8 +3,6 @@ from rdkit.Chem import Descriptors
 import matplotlib.pyplot as plt
 from matplotlib.patches import Ellipse
 import numpy as np
-import seaborn as sns
-sns.set()
 
 
 class ADME(object):
@@ -22,28 +20,33 @@ class ADME(object):
         return Descriptors.TPSA(self.mol)
 
 
-chem = "CN(CCC1=CNC2=C1C=CC=C2)C"
+chem = "ClC1=CC2=C(C=C1)N3C(C)=NN=C3CN=C2C4=CC=CC=C4"
 mol = ADME(chem)
 
 fig, ax = plt.subplots()
 
+ax.patch.set_facecolor("lightgrey")
+
 white = Ellipse((71.051, 2.292), 142.081, 8.740, -1.031325)
 yolk = Ellipse((38.117, 3.177), 82.061, 5.557, -0.171887)
 
-ax.add_artist(white)
 white.set_clip_box(ax.bbox)
 white.set_facecolor("white")
+ax.add_artist(white)
 
-ax.add_artist(yolk)
 yolk.set_clip_box(ax.bbox)
 yolk.set_facecolor("orange")
+ax.add_artist(yolk)
 
 ax.set_xlim(-10, 200)
 ax.set_ylim(-4, 8)
 
+ax.set_xlabel("TPSA")
+ax.set_ylabel("LOGP")
+
 logp = mol.logp()
 tpsa = mol.tpsa()
 
-ax.plot(tpsa, logp)
+ax.scatter(tpsa, logp, zorder=10)
 
 plt.show()
