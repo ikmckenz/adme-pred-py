@@ -12,6 +12,30 @@ class ADME(object):
         else:
             self.mol = mol
 
+    def lipinski_druglikeness(self, verbose=False):
+        violations = []
+
+        h_bond_donors = self.h_bond_donors()
+        if h_bond_donors > 5:
+            violations.append("H Bond Donors {}>5".format(h_bond_donors))
+
+        h_bond_acceptors = self.h_bond_acceptors()
+        if h_bond_acceptors > 10:
+            violations.append("H Bond Acceptors {}>10".format(h_bond_acceptors))
+
+        molecular_mass = self.molecular_mass()
+        if molecular_mass > 500:
+            violations.append("Molecular Mass {}>500".format(molecular_mass))
+
+        logp = self.logp()
+        if logp > 5:
+            violations.append("LOGP {}>5".format(logp))
+
+        if verbose:
+            return violations
+        else:
+            return len(violations) < 1
+
     def boiled_egg(self):
         fig, ax = plt.subplots()
 
@@ -41,6 +65,15 @@ class ADME(object):
 
         return fig
 
+    def h_bond_donors(self):
+        return Chem.Lipinski.NumHDonors(self.mol)
+
+    def h_bond_acceptors(self):
+        return Chem.Lipinski.NumHAcceptors(self.mol)
+
+    def molecular_mass(self):
+        return Descriptors.ExactMolWt(self.mol)
+
     def logp(self):
         return Descriptors.MolLogP(self.mol)
 
@@ -52,5 +85,4 @@ if __name__ == "__main__":
     chem = "ClC1=CC2=C(C=C1)N3C(C)=NN=C3CN=C2C4=CC=CC=C4"
     mol = ADME(chem)
 
-    fig = mol.boiled_egg()
-    plt.show()
+    print(mol.lipinski_druglikeness())
