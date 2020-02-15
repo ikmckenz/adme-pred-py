@@ -12,30 +12,6 @@ class ADME(object):
         else:
             self.mol = mol
 
-    def druglikeness_lipinski(self, verbose=False):
-        violations = []
-
-        h_bond_donors = self.h_bond_donors()
-        if h_bond_donors > 5:
-            violations.append("H Bond Donors {}>5".format(h_bond_donors))
-
-        h_bond_acceptors = self.h_bond_acceptors()
-        if h_bond_acceptors > 10:
-            violations.append("H Bond Acceptors {}>10".format(h_bond_acceptors))
-
-        molecular_weight = self.molecular_weight()
-        if molecular_weight > 500:
-            violations.append("Molecular Weight {}>500".format(molecular_weight))
-
-        logp = self.logp()
-        if logp > 5:
-            violations.append("LOGP {}>5".format(logp))
-
-        if verbose:
-            return violations
-        else:
-            return len(violations) < 1
-
     def druglikeness_ghose(self, verbose=False):
         """
         Ghose (1999) A Knowledge-Based Approach in Designing Combinatorial or
@@ -109,6 +85,31 @@ class ADME(object):
             return violations
         else:
             return len(violations) < 1
+
+    def druglikeness_lipinski(self, verbose=False):
+        violations = []
+
+        h_bond_donors = self.h_bond_donors()
+        if h_bond_donors > 5:
+            violations.append("H Bond Donors {}>5".format(h_bond_donors))
+
+        h_bond_acceptors = self.h_bond_acceptors()
+        if h_bond_acceptors > 10:
+            violations.append("H Bond Acceptors {}>10".format(h_bond_acceptors))
+
+        molecular_weight = self.molecular_weight()
+        if molecular_weight > 500:
+            violations.append("Molecular Weight {}>500".format(molecular_weight))
+
+        logp = self.logp()
+        if logp > 5:
+            violations.append("LOGP {}>5".format(logp))
+
+        if verbose:
+            return violations
+        else:
+            return len(violations) < 1
+
 
     def druglikeness_veber(self, verbose=False):
         """
