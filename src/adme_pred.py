@@ -37,15 +37,28 @@ class ADME(object):
             return len(violations) < 1
 
     def druglikeness_ghose(self, verbose=False):
+        """
+        Ghose (1999) A Knowledge-Based Approach in Designing Combinatorial or
+        Medicinal Chemistry Libraries for Drug Discovery.
+        1. A Qualitative and Quantitative Characterization of Known Drug
+        Databases
+
+        In this paper (and this function) they define the qualifying range
+        (the chance of missing good compounds is less than 20%) as a certain
+        range of Log P, molecular weight, molar refractivity, and the total
+        number of atoms. They also define a preferred range as the  interval
+        having 50% of drugs. The tighter preferred range is implemented in
+        druglikeness_ghose_pref.
+        """
         violations = []
 
         logp = self.logp()
         if logp > 5.6 or logp < -0.4:
             violations.append("LOGP {}".format(logp))
 
-        molecular_mass = self.molecular_weight()
-        if molecular_mass < 160 or molecular_mass > 480:
-            violations.append("Molecular Mass {}".format(molecular_mass))
+        molecular_weight = self.molecular_weight()
+        if molecular_weight < 160 or molecular_weight > 480:
+            violations.append("Molecular Mass {}".format(molecular_weight))
 
         molar_refractivity = self.molar_refractivity()
         if molar_refractivity < 40 or molar_refractivity > 130:
@@ -59,6 +72,44 @@ class ADME(object):
             return violations
         else:
             return len(violations) < 1
+
+    def druglikeness_ghose_pref(self, verbose=False):
+        """
+        Ghose (1999) A Knowledge-Based Approach in Designing Combinatorial or
+        Medicinal Chemistry Libraries for Drug Discovery.
+        1. A Qualitative and Quantitative Characterization of Known Drug
+        Databases
+
+        In this paper they define the qualifying range (the chance of missing
+        good compounds is less than 20%) as a certain range of Log P, molecular
+        weight, molar refractivity, and the total number of atoms. They define
+        a preferred range (implemented in this function) as the  interval
+        having 50% of drugs. The looser qualifying range is implemented in
+        druglikeness_ghose.
+        """
+        violations = []
+
+        logp = self.logp()
+        if logp > 4.1 or logp < 1.3:
+            violations.append("LOGP {}".format(logp))
+
+        molecular_weight = self.molecular_weight()
+        if molecular_weight < 230 or molecular_weight > 390:
+            violations.append("Molecular Mass {}".format(molecular_weight))
+
+        molar_refractivity = self.molar_refractivity()
+        if molar_refractivity < 70 or molar_refractivity > 110:
+            violations.append("MR {}".format(molar_refractivity))
+
+        n_atoms = self.n_atoms()
+        if n_atoms < 30 or n_atoms > 55:
+            violations.append("N Atoms {}".format(n_atoms))
+
+        if verbose:
+            return violations
+        else:
+            return len(violations) < 1
+
 
     def boiled_egg(self):
         fig, ax = plt.subplots()
