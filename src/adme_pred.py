@@ -110,6 +110,35 @@ class ADME(object):
         else:
             return len(violations) < 1
 
+    def druglikeness_veber(self, verbose=False):
+        """
+        Veber (2002) Molecular Properties That Influence the Oral
+        Bioavailability of Drug Candidates
+
+        This study on oral bioavailability in rats shows that molecular weight
+        is only a good predictor of bioavailability insofar as it's correlated
+        with rotatable bonds and polar surface area. They actually propose two
+        different druglikeness rules that achieve a similar effect:
+        i. polar surface area <= 140 angstroms squared AND # rot. bonds <= 10
+        OR
+        ii. sum of H-bond donors and acceptors <= 12 AND # rot. bonds <= 10
+
+        SwissADME uses the polar surface area metric
+        """
+        violations = []
+
+        tpsa = self.tpsa()
+        if tpsa > 140:
+            violations.append("TPSA {}".format(tpsa))
+
+        n_rot_bonds = self.n_rot_bonds()
+        if n_rot_bonds > 10:
+            violations.append("N Rotatable Bonds {}".format(n_rot_bonds))
+
+        if verbose:
+            return violations
+        else:
+            return len(violations) < 1
 
     def boiled_egg(self):
         fig, ax = plt.subplots()
@@ -155,6 +184,9 @@ class ADME(object):
     def n_atoms(self):
         return self.mol.GetNumAtoms()
 
+    def n_rot_bonds(self):
+        return Chem.Lipinski.NumRotatableBonds(self.mol)
+
     def logp(self):
         return Descriptors.MolLogP(self.mol)
 
@@ -166,4 +198,4 @@ if __name__ == "__main__":
     chem = "ClC1=CC2=C(C=C1)N3C(C)=NN=C3CN=C2C4=CC=CC=C4"
     mol = ADME(chem)
 
-    print(mol.druglikeness_ghose())
+    print(mol.druglikeness_veber())
