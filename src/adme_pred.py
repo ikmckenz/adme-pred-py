@@ -12,6 +12,21 @@ class ADME(object):
         else:
             self.mol = mol
 
+    def druglikeness_egan(self, verbose=False):
+        """
+        Egan (2000) Prediction of Drug Absorption Using Multivariate Statistics
+
+
+        """
+        violations = []
+
+        """Egan uses an ellipse? Not a box. So what is SwissADME using? Paper isn't explicit, so I sent an email to ask."""
+
+        if verbose:
+            return violations
+        else:
+            return len(violations) < 1
+
     def druglikeness_ghose(self, verbose=False):
         """
         Ghose (1999) A Knowledge-Based Approach in Designing Combinatorial or
