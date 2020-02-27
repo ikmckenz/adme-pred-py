@@ -3,6 +3,9 @@ from matplotlib.patches import Ellipse
 from rdkit import Chem
 from rdkit.Chem import Descriptors
 
+BOILED_EGG_HIA_ELLIPSE = Ellipse((71.051, 2.292), 142.081, 8.740, -1.031325)
+BOILED_EGG_BBB_ELLIPSE = Ellipse((38.117, 3.177), 82.061, 5.557, -0.171887)
+
 
 class ADME(object):
 
@@ -16,11 +19,24 @@ class ADME(object):
         """
         Egan (2000) Prediction of Drug Absorption Using Multivariate Statistics
 
+        The Egan paper creates the "Egan egg" a multivariable ellipse model.
+        For simplicity, we don't implement the actual Egan egg here, but rather
+        the simpler rule based approximation that the paper describes as the
+        upper bounds for their model inputs. We use the 95% confidence interval
+        levels here, rather than the 99% confidence intervals.
 
+        In the future the full Egan egg model should be implemented here, but
+        that is low priority given the problems with the Egan model.
         """
         violations = []
 
-        """Egan uses an ellipse? Not a box. So what is SwissADME using? Paper isn't explicit, so I sent an email to ask."""
+        tpsa = self.tpsa()
+        if tpsa > 131.6:
+            violations.append("PSA {}".format(tpsa))
+
+        logp = self.logp()
+        if logp > 5.88:
+            violations.append("logP {}".format(logp))
 
         if verbose:
             return violations
@@ -170,7 +186,43 @@ class ADME(object):
         else:
             return len(violations) < 1
 
-    def boiled_egg(self):
+    def boiled_egg_bbb(self, logp=None, psa=None):
+        """
+        Daina (2016) A BOILED-Egg To Predict Gastrointestinal Absorption and
+        Brain Penetration of Small Molecules
+
+        This multivariate model uses log P and Polar Surface Area to determine
+        druglikeness. This function implements their Blood Brain Barrier
+        (BBB) model, which is the "yolk" of the BOILED-Egg.
+        """
+
+        if logp is None:
+            logp = self.logp()
+
+        if psa is None:
+            psa = self.tpsa()
+
+        return BOILED_EGG_BBB_ELLIPSE.contains_point((psa, logp))
+
+    def boiled_egg_hia(self, logp=None, psa=None):
+        """
+        Daina (2016) A BOILED-Egg To Predict Gastrointestinal Absorption and
+        Brain Penetration of Small Molecules
+
+        This multivariate model uses log P and Polar Surface Area to determine
+        druglikeness. This function implements their Human Intestinal Absorption
+        (HIA) model, which is the "white" of the BOILED-Egg. 
+        """
+
+        if logp is None:
+            logp = self.logp()
+
+        if psa is None:
+            psa = self.tpsa()
+
+        return BOILED_EGG_HIA_ELLIPSE.contains_point((psa, logp))
+
+    def boiled_egg_graphical(self):
         fig, ax = plt.subplots()
 
         ax.patch.set_facecolor("lightgrey")
@@ -228,4 +280,4 @@ if __name__ == "__main__":
     chem = "ClC1=CC2=C(C=C1)N3C(C)=NN=C3CN=C2C4=CC=CC=C4"
     mol = ADME(chem)
 
-    print(mol.druglikeness_veber())
+    print(mol.boiled_egg_bbb())
