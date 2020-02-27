@@ -16,11 +16,24 @@ class ADME(object):
         """
         Egan (2000) Prediction of Drug Absorption Using Multivariate Statistics
 
+        The Egan paper creates the "Egan egg" a multivariable ellipse model.
+        For simplicity, we don't implement the actual Egan egg here, but rather
+        the simpler rule based approximation that the paper describes as the
+        upper bounds for their model inputs. We use the 95% confidence interval
+        levels here, rather than the 99% confidence intervals.
 
+        In the future the full Egan egg model should be implemented here, but
+        that is low priority given the problems with the Egan model.
         """
         violations = []
 
-        """Egan uses an ellipse? Not a box. So what is SwissADME using? Paper isn't explicit, so I sent an email to ask."""
+        tpsa = self.tpsa()
+        if tpsa > 131.6:
+            violations.append("PSA {}".format(tpsa))
+
+        logp = self.logp()
+        if logp > 5.88:
+            violations.append("logP {}".format(logp))
 
         if verbose:
             return violations
