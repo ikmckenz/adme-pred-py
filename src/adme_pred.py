@@ -141,7 +141,27 @@ class ADME(object):
         else:
             return len(violations) < 1
 
-    def boiled_egg(self):
+    def boiled_egg_hia(self, logp=None, psa=None):
+        """
+        Daina (2016) A BOILED-Egg To Predict Gastrointestinal Absorption and
+        Brain Penetration of Small Molecules
+
+        This multivariate model uses log P and Polar Surface Area to determine
+        druglikeness. This function implements their Human Intestinal Absorption
+        (HIA) model, which is the "white" of the BOILED-Egg. 
+        """
+
+        if logp is None:
+            logp = self.logp()
+
+        if psa is None:
+            psa = self.tpsa()
+
+
+
+
+
+    def boiled_egg_graphical(self):
         fig, ax = plt.subplots()
 
         ax.patch.set_facecolor("lightgrey")
