@@ -2,6 +2,7 @@ import matplotlib.pyplot as plt
 from matplotlib.patches import Ellipse
 from rdkit import Chem
 from rdkit.Chem import Descriptors
+from rdkit.Chem import rdqueries
 
 BOILED_EGG_HIA_ELLIPSE = Ellipse((71.051, 2.292), 142.081, 8.740, -1.031325)
 BOILED_EGG_BBB_ELLIPSE = Ellipse((38.117, 3.177), 82.061, 5.557, -0.171887)
@@ -145,11 +146,48 @@ class ADME(object):
         """
         Muegge (2001) Simple Selection Criteria for Drug-like Chemical Matter
 
-
+        In this paper they define a few specific "pharmacophore points" that
+        are essentially proxies of hydrogen bonding ability. SwissADME uses
+        a few simple rules based filters to approximate the pharmacophore point
+        filter in this paper, and we implement the rules based filter here.
         """
         violations = []
 
+        molecular_weight = self.molecular_weight()
+        if molecular_weight > 600 or molecular_weight < 200:
+            violations.append("MW {}".format(molecular_weight))
+
         logp = self.logp()
+        if logp > 5 or logp < -2:
+            violations.append("LOGP {}".format(logp))
+
+        tpsa = self.tpsa()
+        if tpsa > 150:
+            violations.append("TPSA {}".format(tpsa))
+
+        n_rings = self.n_rings()
+        if n_rings > 7:
+            violations.append("N Rings {}".format(n_rings))
+
+        n_carbon = self.n_carbons()
+        if n_carbon < 5:
+            violations.append("N Carbon {}".format(n_carbon))
+
+        n_heteroatoms = self.n_heteroatoms()
+        if n_heteroatoms < 2:
+            violations.append("N Heteroatoms".format(n_heteroatoms))
+
+        n_rot_bonds = self.n_rot_bonds()
+        if n_rot_bonds > 15:
+            violations.append("N Rot Bonds {}".format(n_rot_bonds))
+
+        h_bond_acc = self.h_bond_acceptors()
+        if h_bond_acc > 10:
+            violations.append("H Bond Acc {}".format(h_bond_acc))
+
+        h_bond_don = self.h_bond_donors()
+        if h_bond_don > 5:
+            violations.append("H Bond Don {}".format(h_bond_don))
 
         if verbose:
             return violations
@@ -266,6 +304,16 @@ class ADME(object):
     def n_atoms(self):
         return self.mol.GetNumAtoms()
 
+    def n_carbons(self):
+        carbon = Chem.rdqueries.AtomNumEqualsQueryAtom(6)
+        return len(self.mol.GetAtomsMatchingQuery(carbon))
+
+    def n_heteroatoms(self):
+        return Descriptors.rdMolDescriptors.CalcNumHeteroatoms(self.mol)
+
+    def n_rings(self):
+        return Descriptors.rdMolDescriptors.CalcNumRings(self.mol)
+
     def n_rot_bonds(self):
         return Chem.Lipinski.NumRotatableBonds(self.mol)
 
@@ -280,4 +328,4 @@ if __name__ == "__main__":
     chem = "ClC1=CC2=C(C=C1)N3C(C)=NN=C3CN=C2C4=CC=CC=C4"
     mol = ADME(chem)
 
-    print(mol.boiled_egg_bbb())
+    print(mol.druglikeness_muegge())
