@@ -4,11 +4,10 @@ from rdkit import Chem
 from rdkit.Chem import Descriptors
 from rdkit.Chem import rdqueries
 
-BOILED_EGG_HIA_ELLIPSE = Ellipse((71.051, 2.292), 142.081, 8.740, -1.031325)
-BOILED_EGG_BBB_ELLIPSE = Ellipse((38.117, 3.177), 82.061, 5.557, -0.171887)
-
 
 class ADME(object):
+    BOILED_EGG_HIA_ELLIPSE = Ellipse((71.051, 2.292), 142.081, 8.740, -1.031325)
+    BOILED_EGG_BBB_ELLIPSE = Ellipse((38.117, 3.177), 82.061, 5.557, -0.171887)
 
     def __init__(self, mol):
         if isinstance(mol, str):
@@ -240,7 +239,7 @@ class ADME(object):
         if psa is None:
             psa = self.tpsa()
 
-        return BOILED_EGG_BBB_ELLIPSE.contains_point((psa, logp))
+        return self.BOILED_EGG_BBB_ELLIPSE.contains_point((psa, logp))
 
     def boiled_egg_hia(self, logp=None, psa=None):
         """
@@ -258,15 +257,15 @@ class ADME(object):
         if psa is None:
             psa = self.tpsa()
 
-        return BOILED_EGG_HIA_ELLIPSE.contains_point((psa, logp))
+        return self.BOILED_EGG_HIA_ELLIPSE.contains_point((psa, logp))
 
     def boiled_egg_graphical(self):
         fig, ax = plt.subplots()
 
         ax.patch.set_facecolor("lightgrey")
 
-        white = Ellipse((71.051, 2.292), 142.081, 8.740, -1.031325)
-        yolk = Ellipse((38.117, 3.177), 82.061, 5.557, -0.171887)
+        white = self.BOILED_EGG_HIA_ELLIPSE
+        yolk = self.BOILED_EGG_BBB_ELLIPSE
 
         white.set_clip_box(ax.bbox)
         white.set_facecolor("white")
@@ -328,4 +327,4 @@ if __name__ == "__main__":
     chem = "ClC1=CC2=C(C=C1)N3C(C)=NN=C3CN=C2C4=CC=CC=C4"
     mol = ADME(chem)
 
-    print(mol.druglikeness_muegge())
+    print(mol.boiled_egg_bbb())
