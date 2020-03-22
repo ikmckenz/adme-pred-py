@@ -3,6 +3,7 @@ from matplotlib.patches import Ellipse
 from rdkit import Chem
 from rdkit.Chem import Descriptors
 from rdkit.Chem import rdqueries
+from rdkit.Chem import FilterCatalog
 
 
 class ADME(object):
@@ -288,6 +289,40 @@ class ADME(object):
 
         return fig
 
+    def brenk(self):
+        """
+        Brenk (2008) Lessons Learnt from Assembling Screening Libraries for
+        Drug Discovery for Neglected Diseases
+
+        Brenk's Structural Alert filter finds fragments "putatively toxic,
+        chemically reactive, metabolically unstable or to bear properties
+        responsible for poor pharmacokinetics."
+
+        Returns:
+            Boolean of whether the molecule triggers the Brenk filter.
+        """
+        params = FilterCatalog.FilterCatalogParams()
+        params.AddCatalog(FilterCatalog.FilterCatalogParams.FilterCatalogs.BRENK)
+        catalog = FilterCatalog.FilterCatalog(params)
+        return catalog.HasMatch(self.mol)
+
+    def pains(self):
+        """
+        Baell and Holloway (2010) New Substructure Filters for Removal of Pan
+        Assay Interference Compounds (PAINS) from Screening Libraries and for
+        Their Exclusion in Bioassays
+
+        This filter finds promiscuous compounds that are likely to show activity
+        regardless of the target.
+
+        Returns:
+            Boolean of whether the molecule triggers the PAINS filter.
+        """
+        params = FilterCatalog.FilterCatalogParams()
+        params.AddCatalog(FilterCatalog.FilterCatalogParams.FilterCatalogs.PAINS)
+        catalog = FilterCatalog.FilterCatalog(params)
+        return catalog.HasMatch(self.mol)
+
     def h_bond_donors(self):
         return Chem.Lipinski.NumHDonors(self.mol)
 
@@ -327,4 +362,4 @@ if __name__ == "__main__":
     chem = "ClC1=CC2=C(C=C1)N3C(C)=NN=C3CN=C2C4=CC=CC=C4"
     mol = ADME(chem)
 
-    print(mol.boiled_egg_bbb())
+    print(mol.pains())
