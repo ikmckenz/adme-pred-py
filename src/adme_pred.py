@@ -7,8 +7,16 @@ from rdkit.Chem import FilterCatalog
 
 
 class ADME(object):
-    BOILED_EGG_HIA_ELLIPSE = Ellipse((71.051, 2.292), 142.081, 8.740, -1.031325)
-    BOILED_EGG_BBB_ELLIPSE = Ellipse((38.117, 3.177), 82.061, 5.557, -0.171887)
+    """
+    ADME is the main class that contains the core ADME calculations. Functions
+    include many druglikeness filters (Lipinski's rule of five, Egan, Ghose,
+    BOILED-Egg, etc.), medicinal chemistry filters (PAINS, Brenk), and provides
+    a consistent, simple wrapping API for common cheminformatics calculations.
+    """
+
+    # Class constants
+    BOILED_EGG_HIA_ELLIPSE = Ellipse((71.051, 2.292), 142.081, 8.740, -1.031325)  # From the BOILED-Egg paper
+    BOILED_EGG_BBB_ELLIPSE = Ellipse((38.117, 3.177), 82.061, 5.557, -0.171887)  # From the BOILED-Egg paper
 
     def __init__(self, mol):
         if isinstance(mol, str):
@@ -119,6 +127,18 @@ class ADME(object):
             return len(violations) < 1
 
     def druglikeness_lipinski(self, verbose=False):
+        """
+        Lipinski (2001) Experimental and computational approaches to estimate
+        solubility and permeability in drug discovery and development settings
+
+        https://en.wikipedia.org/wiki/Lipinski%27s_rule_of_five
+
+        Lipinski's rule of 5 is one of the most important druglikenss filters,
+        against which all others are judged. The rules of the filter are no
+        more than 5 hydrogen bond donors, no more than 10 hydrogen bond
+        acceptors, a molecular mass of less than 500 daltons, and a logP
+        that does not exceed 5.
+        """
         violations = []
 
         h_bond_donors = self.h_bond_donors()
@@ -261,6 +281,14 @@ class ADME(object):
         return self.BOILED_EGG_HIA_ELLIPSE.contains_point((psa, logp))
 
     def boiled_egg_graphical(self):
+        """
+        Daina (2016) A BOILED-Egg To Predict Gastrointestinal Absorption and
+        Brain Penetration of Small Molecules
+
+        Takes the BOILED-Egg calculations implemented in boiled_egg_bbb and
+        boiled_egg_hia and creates a matplotlib plot of the computations.
+        :return:
+        """
         fig, ax = plt.subplots()
 
         ax.patch.set_facecolor("lightgrey")
