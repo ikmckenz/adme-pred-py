@@ -158,6 +158,8 @@ class ADME(object):
             violations.append("LOGP {}>5".format(logp))
 
         if verbose:
+            if not violations:
+                return "No violations found"
             return violations
         else:
             return len(violations) < 1
@@ -387,7 +389,7 @@ class ADME(object):
 
 
 if __name__ == "__main__":
-    chem = "ClC1=CC2=C(C=C1)N3C(C)=NN=C3CN=C2C4=CC=CC=C4"
+    chem = "O=C(C)Oc1ccccc1C(=O)O"
     mol = ADME(chem)
 
     print(mol.pains())
