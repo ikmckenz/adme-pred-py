@@ -1,9 +1,11 @@
+import os
+
 import matplotlib.pyplot as plt
 from matplotlib.patches import Ellipse
 from rdkit import Chem
 from rdkit.Chem import Descriptors
-from rdkit.Chem import rdqueries
 from rdkit.Chem import FilterCatalog
+from rdkit.Chem import rdqueries
 
 
 class ADME(object):
@@ -23,6 +25,26 @@ class ADME(object):
             self.mol = Chem.MolFromSmiles(mol)
         else:
             self.mol = mol
+
+    def full_report(self):
+        """Print a full report on a molecule with many implemented functions"""
+
+        print("Pharmacokinetics:")
+        print("GI absorption: {}".format("High" if self.boiled_egg_bbb() else "Low"))
+        print("BBB permeant: {}".format("Yes" if self.boiled_egg_hia() else "No"))
+        print(os.linesep)
+
+        druglikeness = self.druglikeness_lipinski(verbose=True)
+        print("Lipinski Rule of 5 Violations:")
+        if isinstance(druglikeness, str):
+            print(druglikeness)
+        else:
+            print(*druglikeness, sep="\n")
+        print(os.linesep)
+
+        print("Medicinal Chemistry:")
+        print("PAINS filter: {}".format(self.pains()))
+        print("Brenk filter: {}".format(self.brenk()))
 
     def druglikeness_egan(self, verbose=False):
         """
@@ -391,5 +413,4 @@ class ADME(object):
 if __name__ == "__main__":
     chem = "O=C(C)Oc1ccccc1C(=O)O"
     mol = ADME(chem)
-
-    print(mol.pains())
+    mol.full_report()
