@@ -7,6 +7,8 @@ We want the core code to be abstract enough that it can produce a extensive repo
 We will probably also want to implement some functionality from [Open Source Bayesian Models](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4478615/).
 
 ### Getting started
+We use Anaconda as the base Python, so first install it from here: https://www.anaconda.com/products/individual.
+
 To get up and running, first create the environment:
 ```bash
 conda create --name adme-pred-py
