@@ -1,3 +1,7 @@
+"""This library supports computational drug discovery by implementing several
+druglikenss filters, medicinal chemistry filters, and provides an easy to use
+wrapping API for common cheminformatics calculations."""
+
 import os
 
 import matplotlib.pyplot as plt
@@ -5,7 +9,7 @@ from matplotlib.patches import Ellipse
 from rdkit import Chem
 from rdkit.Chem import Descriptors
 from rdkit.Chem import FilterCatalog
-from rdkit.Chem import rdqueries
+from rdkit.Chem import rdqueries  # pylint: disable=unused-import
 
 
 class ADME:
@@ -421,11 +425,3 @@ class ADME:
     def _tpsa(self):
         """Topological polar surface area"""
         return Descriptors.TPSA(self.mol)
-
-
-if __name__ == "__main__":
-    chem = "O=C(C)Oc1ccccc1C(=O)O"
-    mol = ADME(chem)
-    mol.full_report()
-    for s in mol.druglikeness_muegge(verbose=True):
-        print(s)
