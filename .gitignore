@@ -105,3 +105,4 @@ venv.bak/
 
 # Project specific
 .idea/
+docs/_build
