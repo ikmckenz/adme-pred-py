@@ -5,10 +5,11 @@ This library supports computational drug discovery by implementing several drugl
 ### Getting started
 We use Anaconda as the base Python, so first install it from here: https://www.anaconda.com/products/individual.
 
-Then to get up and running, simply create an environment and install from conda.
+Then to get up and running, simply create an environment, add the conda-forge channel, and install from conda.
 ```bash
 conda create -n adme-pred-py python=3.9
 conda activate adme-pred-py
+conda config --add channels conda-forge
 conda install -c ikmckenz adme-pred-py
 ```
 
@@ -56,4 +57,5 @@ True
 We want to replicate most of the functionality of [SwissADME](https://www.nature.com/articles/srep42717). 
 We want the core code to be abstract enough that it can produce a extensive report on a single compound like SwissADME, or be used as a filter in a screen. (Ex. `for compound in compounds if lipinski_druglikeness then ...`)
 We will probably also want to implement some functionality from [Open Source Bayesian Models](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4478615/).
-We maintain a list of 
+
+We are open to novice contributors, and maintain a issues good for beginners in our [issues](https://github.com/ikmckenz/adme-pred-py/issues).
