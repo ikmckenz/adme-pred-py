@@ -1,1 +1,1 @@
-name = "adme-pred-py"
+name = "adme"
