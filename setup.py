@@ -1,6 +1,7 @@
+"""setup.py file for packaging purposes"""
 import setuptools
 
-with open("README.md", "r") as fh:
+with open("README.md", mode="r", encoding="ascii") as fh:
     long_description = fh.read()
 
 setuptools.setup(
