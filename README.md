@@ -1,19 +1,21 @@
 # adme-pred-py
 
-This library supports computational drug discovery by implementing several druglikenss filters, medicinal chemistry filters, and provides an easy to use wrapping API for common cheminformatics calculations.
-
-We want to replicate most of the functionality of [SwissADME](https://www.nature.com/articles/srep42717). 
-We want the core code to be abstract enough that it can produce a extensive report on a single compound like SwissADME, or be used as a filter in a screen. (Ex. `for compound in compounds if lipinski_druglikeness then ...`)
-We will probably also want to implement some functionality from [Open Source Bayesian Models](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4478615/).
+This library supports computational drug discovery by implementing several druglikeness filters, medicinal chemistry filters, and provides an easy to use wrapping API for common cheminformatics calculations.
 
 ### Getting started
 We use Anaconda as the base Python, so first install it from here: https://www.anaconda.com/products/individual.
 
-Then to get up and running, create the environment:
+Then to get up and running, simply create an environment and install from conda.
 ```bash
-conda create --name adme-pred-py
+conda create -n adme-pred-py python=3.9
 conda activate adme-pred-py
-conda install -c conda-forge -n adme-pred-py rdkit matplotlib
+conda install -c ikmckenz adme-pred-py
+```
+
+You can now import the main ADME class and get started!
+
+```python
+from adme_pred import ADME
 ```
 
 ### Examples
@@ -50,3 +52,8 @@ print(mol.brenk())
 True
 ```
 
+### Contribute!
+We want to replicate most of the functionality of [SwissADME](https://www.nature.com/articles/srep42717). 
+We want the core code to be abstract enough that it can produce a extensive report on a single compound like SwissADME, or be used as a filter in a screen. (Ex. `for compound in compounds if lipinski_druglikeness then ...`)
+We will probably also want to implement some functionality from [Open Source Bayesian Models](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4478615/).
+We maintain a list of 
