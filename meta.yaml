@@ -1,0 +1,27 @@
+package:
+  name: "adme-pred-py"
+  version: "0.0.1"
+
+source:
+  git_url: https://github.com/ikmckenz/adme-pred-py
+
+requirements:
+  host:
+    - python
+    - setuptools
+  build:
+    - python
+  run:
+    - python
+    - rdkit
+    - matplotlib
+
+about:
+  home: https://github.com/ikmckenz/adme-pred-py
+  license: AGPLv3+
+  license_file: LICENSE
+  summary: "ADME/Tox Models in Python"
+
+extra:
+  recipe-maintainers:
+    - ikmckenz
