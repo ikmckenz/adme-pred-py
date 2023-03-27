@@ -6,7 +6,7 @@ with open("README.md", mode="r", encoding="ascii") as fh:
 
 setuptools.setup(
     name="adme_pred",
-    version="0.0.1",
+    version="0.0.2",
     author="ikmckenz",
     description="ADME/Tox Models in Python",
     long_description=long_description,

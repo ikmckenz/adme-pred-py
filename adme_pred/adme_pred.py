@@ -1,7 +1,7 @@
 """This library supports computational drug discovery by implementing several
 druglikenss filters, medicinal chemistry filters, and provides an easy to use
 wrapping API for common cheminformatics calculations."""
-
+import copy
 import os
 
 import matplotlib.pyplot as plt
@@ -310,7 +310,7 @@ class ADME:
 
         return self.BOILED_EGG_HIA_ELLIPSE.contains_point((psa, logp))
 
-    def boiled_egg_graphical(self):
+    def boiled_egg_graphical(self) -> plt.Figure:
         """
         Daina (2016) A BOILED-Egg To Predict Gastrointestinal Absorption and
         Brain Penetration of Small Molecules
@@ -323,8 +323,8 @@ class ADME:
 
         axis.patch.set_facecolor("lightgrey")
 
-        white = self.BOILED_EGG_HIA_ELLIPSE
-        yolk = self.BOILED_EGG_BBB_ELLIPSE
+        white = copy.deepcopy(self.BOILED_EGG_HIA_ELLIPSE)
+        yolk = copy.deepcopy(self.BOILED_EGG_BBB_ELLIPSE)
 
         white.set_clip_box(axis.bbox)
         white.set_facecolor("white")
